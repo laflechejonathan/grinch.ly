@@ -33,7 +33,7 @@ class Plotter:
     def _draw(self, points):
         print "Now Drawing..."
         for point in points:
-            print "Plotting point: (" + str(point.x) + "," + str(point.y) + ")"
+            print "Plotting point:", point
 
     def _gcd(self, a, b):
         while b:
