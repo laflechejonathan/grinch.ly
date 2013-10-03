@@ -10,9 +10,6 @@ class Plotter:
             return
         slope = self._calculate_slope(self.state, point)
         points = self._generate_points(self.state, point, slope)
-        print "Points: "
-        for point in points:
-            print point.x, point.y
         self._draw(points)
     
     def move_to(self, point):
@@ -28,18 +25,18 @@ class Plotter:
         current_point = point_1
         points = [current_point]
         while current_point != point_2:
-            current_point = Point(current_point.x + slope[1] , 
+            current_point = Point(current_point.x + slope[1], 
                                   current_point.y + slope[0])
             points.append(current_point)
         return points
 
     def _draw(self, points):
-        pass
+        print "Now Drawing..."
+        for point in points:
+            print "Plotting point: (" + str(point.x) + "," + str(point.y) + ")"
 
     def _gcd(self, a, b):
         while b:
             a, b = b, a % b
         return abs(a)
-
-
 
