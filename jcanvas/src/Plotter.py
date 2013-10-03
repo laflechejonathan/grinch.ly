@@ -1,8 +1,12 @@
+from Point import Point
 
 class Plotter:
 	
-	# line_to
-	# move_to
-	# etc
+	def __init__(self, initial_state):
+		self.state = initial_state
 
-	pass
+	def line_to(point):
+		pass
+	
+	def move_to(point):
+		pass
