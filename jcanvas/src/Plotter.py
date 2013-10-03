@@ -6,6 +6,8 @@ class Plotter:
         self.state = initial_state
 
     def line_to(self, point):
+        if self.state == point: 
+            return
         slope = self._calculate_slope(self.state, point)
         points = self._generate_points(self.state, point, slope)
         print "Points: "
@@ -23,13 +25,11 @@ class Plotter:
         return (y_diff / gcd, x_diff / gcd)
 
     def _generate_points(self, point_1, point_2, slope):
-        x_offset = 1 if point_2.x >= point_1.x else -1
-        y_offset = 1 if point_2.y >= point_1.y else -1
         current_point = point_1
         points = [current_point]
         while current_point != point_2:
-            current_point = Point(current_point.x + (slope[1] * x_offset), 
-                                  current_point.y + (slope[0] * y_offset))
+            current_point = Point(current_point.x + slope[1] , 
+                                  current_point.y + slope[0])
             points.append(current_point)
         return points
 
@@ -39,8 +39,7 @@ class Plotter:
     def _gcd(self, a, b):
         while b:
             a, b = b, a % b
-        return a
+        return abs(a)
 
-x = Plotter(Point(8,4))
-x.line_to(Point(4,2))
+
 
