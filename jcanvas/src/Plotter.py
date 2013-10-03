@@ -28,7 +28,8 @@ class Plotter:
         current_point = point_1
         points = [current_point]
         while current_point != point_2:
-            current_point = Point(current_point.x + slope[1], current_point.y + slope[0])
+            current_point = Point(current_point.x + (slope[1] * x_offset), 
+                                  current_point.y + (slope[0] * y_offset))
             points.append(current_point)
         return points
 
@@ -40,4 +41,6 @@ class Plotter:
             a, b = b, a % b
         return a
 
+x = Plotter(Point(8,4))
+x.line_to(Point(4,2))
 
