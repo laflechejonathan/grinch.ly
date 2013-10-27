@@ -1,0 +1,68 @@
+*****************************************************************
+      SolidWorks Corporation - IGES Processor Status Report
+*****************************************************************
+=================================================================
+General Information
+=================================================================
+Sending System Product I.D.  : NEMA 17 Stepper Motor Assembly
+Receiving System Product I.D.: NEMA 17 Stepper Motor Assembly
+File Name                    : C:\Users\Brian\Desktop\SolidWorks Designs\Additive Rappid Prototyper\NEMA 17 Stepper Motor Assembly.IGS
+Sending System               : SolidWorks 2012
+Preprocessor Version         : SolidWorks 2012
+File Creation Date           : 130531.225408
+Model Creation Date          : 130531.225408
+Units                        : MM
+Model Space Scale            : 1
+Author                       : Brian
+Organization                 : 
+
+
+=================================================================
+Entity Processing Information
+=================================================================
+
+
+=================================================================
+Precision analysis of IGES file:
+=================================================================
+  Most prevalent number of significant digits:               9
+  Highest number of significant digits:                     10
+  Average number of significant digits:                7.03004
+  Maximum distance to origin:                          1025.42
+  Minimum distance to origin:                                0
+  Effective number of significant digits:                   10
+
+
+=================================================================
+Entity Summary
+=================================================================
+-----------------------------------------------------------------
+Type Name                                         Count Converted
+---- ----                                         ----- ---------
+100  Arc                                            406       406
+102  Composite curve                                596       596
+110  Line                                          1048      1048
+120  Surface of revolution                           83        83
+124  Transformation matrix                          410       410
+126  Rational B-spline curve                       1304      1304
+128  Rational B-spline surface                      174       174
+142  Curve on a parametric surface                  298       298
+144  Trimmed parametric surface                     257       257
+308  Subfigure definition                             5         5
+314  Color definition                                 9         9
+408  Singular subfigure instance                      8         8
+_________________________________________________________________
+
+
+=================================================================
+Result Summary
+=================================================================
+SolidWorks Feature Type                Count
+-----------------------                -----
+Solid feature(s)                       5
+Surface feature(s)                     0
+Curve/Sketch feature(s)                0
+--------------------------------------------
+Start time: Saturday, October 26, 2013 16:55:31
+Finish time: Saturday, October 26, 2013 16:55:34
+Processing time: 0 days, 00 hours, 00 mins, 03 secs
