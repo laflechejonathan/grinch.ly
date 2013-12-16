@@ -1,15 +1,19 @@
 
-debug = {};
-
 JCanvas = {
 
-    DEFAULT_TOOL : 'line',
+    DEFAULT_TOOL : 'hand',
     
     tool : {},
     
     canvas : {},
 
     init : function() {
+
+        $( '#drawingtools' ).selectable({
+            selected : function(event, ui) {
+                JCanvas.changeTool(ui.selected.id);
+            }
+        });
 
         // Find the canvas element.
         var canvasElement = document.getElementById('imageView');
@@ -20,22 +24,15 @@ JCanvas = {
 
         JCanvas.canvas = new fabric.Canvas('imageView');
 
-        // Get the tool select input.
-        var toolSelect = document.getElementById('dtool');
-        if ( ! toolSelect) {
-            alert('Error: Failed to get the dtool element!');
-            return;
-        }
-        toolSelect.addEventListener('change', JCanvas.toolChangeEvent, false);
-
         // Activate the default tool.
         if (JCanvas.tools[JCanvas.DEFAULT_TOOL]) {
             JCanvas.tool = new JCanvas.tools[JCanvas.DEFAULT_TOOL]();
-            toolSelect.value = JCanvas.DEFAULT_TOOL;
         }
 
         JCanvas.canvas.on('mouse:down', function(options) {
-            JCanvas.canvasEvent(options.e);
+            if ( ! options.target) {
+                JCanvas.canvasEvent(options.e);
+            }
         });
     },
 
@@ -52,45 +49,39 @@ JCanvas = {
 
         // Call the event handler of the tool.
         var func = JCanvas.tool[ev.type];
-        console.log(func);
         if (func) {
             func(ev);
         }
     },
 
-    toolChangeEvent : function(ev) {
+    changeTool : function(tool) {
 
-        if (JCanvas.tools[this.value]) {
-            JCanvas.tool = new JCanvas.tools[this.value]();
+        console.log(tool);
+        if (JCanvas.tools[tool]) {
+            JCanvas.tool = new JCanvas.tools[tool]();
         }
     },
 
     tools : {
 
-        manipulate: function() {
-
-        },
+        hand: function() { },
 
         ellipse : function() {
-
             this.mousedown = function(ev) { 
-
                 JCanvas.canvas.add(
                     new fabric.Ellipse({
-                        borderColor: 'green', 
+                        fill: 'none', 
+                        stroke : 'black',
                         left: ev._x, 
                         top: ev._y, 
                         rx: 50, 
                         ry: 50
                     }));
-
             };
         },
 
         line : function() {
-
             this.mousedown = function(ev) { 
-                
                 JCanvas.canvas.add(
                     new fabric.Line([
                         ev._x - 50, 
@@ -98,7 +89,6 @@ JCanvas = {
                         ev._x + 50, 
                         ev._y + 50], { stroke: 'black' }
                     ));
-
             };
         }
     }
