@@ -9,31 +9,32 @@ JCanvas = {
 
     init : function() {
 
+        // Initialize Selectable Tools
         $( '#drawingtools' ).selectable({
             selected : function(event, ui) {
                 JCanvas.changeTool(ui.selected.id);
             }
         });
 
-        // Find the canvas element.
-        var canvasElement = document.getElementById('imageView');
-        if ( ! canvasElement || ! canvasElement.getContext || ! canvasElement.getContext('2d')) {
-            alert('Error: Something is wrong with the canvas!');
-            return;
-        }
-
-        JCanvas.canvas = new fabric.Canvas('imageView');
-
-        // Activate the default tool.
+        // Initialize Tool to Default Tool
         if (JCanvas.tools[JCanvas.DEFAULT_TOOL]) {
             JCanvas.tool = new JCanvas.tools[JCanvas.DEFAULT_TOOL]();
         }
 
+        // Initialize Canvas and attach event handler(s)
+        JCanvas.canvas = new fabric.Canvas('imageView');
         JCanvas.canvas.on('mouse:down', function(options) {
             if ( ! options.target) {
                 JCanvas.canvasEvent(options.e);
             }
         });
+    },
+
+    changeTool : function(tool) {
+        
+        if (JCanvas.tools[tool]) {
+            JCanvas.tool = new JCanvas.tools[tool]();
+        }
     },
 
     canvasEvent : function(ev) {
@@ -51,14 +52,6 @@ JCanvas = {
         var func = JCanvas.tool[ev.type];
         if (func) {
             func(ev);
-        }
-    },
-
-    changeTool : function(tool) {
-
-        console.log(tool);
-        if (JCanvas.tools[tool]) {
-            JCanvas.tool = new JCanvas.tools[tool]();
         }
     },
 
