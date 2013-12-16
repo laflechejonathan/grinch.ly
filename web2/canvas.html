@@ -11,8 +11,9 @@
   </head>
   <body>
     <p><label>Drawing tool: <select id="dtool">
-        <option value="line">Line</option>
-        <option value="ellipse">Ellipse</option>
+        <option value="manipulate">Manipulate Stuff</option>
+        <option value="line">Add Line</option>
+        <option value="ellipse">Add Ellipse</option>
     </select></label></p>
 
     <div id="container">
@@ -28,9 +29,12 @@
       </canvas>
     </div>
 
-    <script type="text/javascript" src="JDrawer.js"></script>
-    <script type="text/javascript" src="JCanvas.js"></script>
-    <script type="text/javascript" src="Main.js"></script>
+    <script type="text/javascript" src="lib/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="lib/fabric.js"></script>
+    
+    <script type="text/javascript" src="js/JCanvas.js"></script>
+    <script type="text/javascript" src="js/App.js"></script>
+
   </body>
 </html>
 

@@ -1,7 +1,7 @@
 
 JDrawer = {
 
-    drawEllipse : function(context, x, y, w, h) {
+    Ellipse : function(context, x, y, w, h) {
         
         var kappa = .5522848,
             ox = (w / 2) * kappa, // control point offset horizontal
@@ -21,12 +21,17 @@ JDrawer = {
         context.stroke();
     },
 
-    drawLine : function(context, x0, y0, x1, y1) {
+    Line : function(canvas, x0, y0, x1, y1) {
         
-        context.beginPath();
-        context.moveTo(x0, y0);
-        context.lineTo(x1, y1);
-        context.stroke();
-        context.closePath();
+        canvas.add(
+            new fabric.Line([x0, y0, x1, y1], {
+                stroke: 'black'
+            }));
+
+        // context.beginPath();
+        // context.moveTo(x0, y0);
+        // context.lineTo(x1, y1);
+        // context.stroke();
+        // context.closePath();
     }
 };
