@@ -1,268 +1,207 @@
 
+JCanvas = {
 
-if (window.addEventListener) {
-  
-    window.addEventListener('load', function () {
+    DEFAULT_TOOL : 'line',
     
-        var DEFAULT_TOOL = 'line';
+    tool : {},
+    
+    canvas : {},
+    contextDynamic : {},
+    contextStatic : {},
 
-        var canvas, context, canvaso, contexto;
+    init : function() {
 
-        // The active tool instance.
-        var tool;
-        
-        function init () {
-      
-            // Find the canvas element.
-            canvaso = document.getElementById('imageView');
-            if ( ! canvaso) {
-                alert('Error: I cannot find the canvas element!');
-                return;
-            }
-
-            if ( ! canvaso.getContext) {
-                alert('Error: no canvas.getContext!');
-                return;
-            }
-
-            // Get the 2D canvas context.
-            contexto = canvaso.getContext('2d');
-            if ( ! contexto) {
-                alert('Error: failed to getContext!');
-                return;
-            }
-
-            // Add the temporary canvas.
-            var container = canvaso.parentNode;
-            canvas = document.createElement('canvas');
-            if ( ! canvas) {
-                alert('Error: I cannot create a new canvas element!');
-                return;
-            }
-
-            canvas.id     = 'imageTemp';
-            canvas.width  = canvaso.width;
-            canvas.height = canvaso.height;
-            container.appendChild(canvas);
-
-            context = canvas.getContext('2d');
-
-            // Get the tool select input.
-            var tool_select = document.getElementById('dtool');
-            if ( ! tool_select) {
-                alert('Error: failed to get the dtool element!');
-                return;
-            }
-            tool_select.addEventListener('change', ev_tool_change, false);
-
-            // Activate the default tool.
-            if (tools[DEFAULT_TOOL]) {
-                tool = new tools[DEFAULT_TOOL]();
-                tool_select.value = DEFAULT_TOOL;
-            }
-
-            // Attach the mousedown, mousemove and mouseup event listeners.
-            canvas.addEventListener('mousedown', ev_canvas, false);
-            canvas.addEventListener('mousemove', ev_canvas, false);
-            canvas.addEventListener('mouseup',   ev_canvas, false);
+        // Find the canvas element.
+        var canvasElement = document.getElementById('imageView');
+        if ( ! canvasElement || ! canvasElement.getContext || ! canvasElement.getContext('2d')) {
+            alert('Error: Something is wrong with the canvas!');
+            return;
         }
 
-        // The general-purpose event handler. This function just determines the mouse 
-        // position relative to the canvas element.
-        function ev_canvas(ev) {
-          
-            if (ev.layerX || ev.layerX == 0) { // Firefox
-                ev._x = ev.layerX;
-                ev._y = ev.layerY;
-            } 
-            else if (ev.offsetX || ev.offsetX == 0) { // Opera
-                ev._x = ev.offsetX;
-                ev._y = ev.offsetY;
-            }
+        // Get the 2D canvas context.
+        JCanvas.contextStatic = canvasElement.getContext('2d');
 
-            // Call the event handler of the tool.
-            var func = tool[ev.type];
-            if (func) {
-                func(ev);
-            }
+        // Add the temporary canvas.
+        JCanvas.canvas = document.createElement('canvas');
+        if ( ! JCanvas.canvas) {
+            alert('Error: Canvas element cannot be created!');
+            return;
         }
 
-        // The event handler for any changes made to the tool selector.
-        function ev_tool_change (ev) {
-            if (tools[this.value]) {
-                tool = new tools[this.value]();
-            }
+        JCanvas.canvas.id     = 'imageTemp';
+        JCanvas.canvas.width  = canvasElement.width;
+        JCanvas.canvas.height = canvasElement.height;
+        canvasElement.parentNode.appendChild(JCanvas.canvas);
+
+        JCanvas.contextDynamic = JCanvas.canvas.getContext('2d');
+
+        // Get the tool select input.
+        var toolSelect = document.getElementById('dtool');
+        if ( ! toolSelect) {
+            alert('Error: Failed to get the dtool element!');
+            return;
+        }
+        toolSelect.addEventListener('change', JCanvas.toolChangeEvent, false);
+
+        // Activate the default tool.
+        if (JCanvas.tools[JCanvas.DEFAULT_TOOL]) {
+            JCanvas.tool = new JCanvas.tools[JCanvas.DEFAULT_TOOL]();
+            toolSelect.value = JCanvas.DEFAULT_TOOL;
         }
 
-        // This function draws the #imageTemp canvas on top of #imageView, after which 
-        // #imageTemp is cleared. This function is called each time when the user 
-        // completes a drawing operation.
-        function img_update () {
-      		  contexto.drawImage(canvas, 0, 0);
-      		  context.clearRect(0, 0, canvas.width, canvas.height);
+        // Attach the mousedown, mousemove and mouseup event listeners.
+        JCanvas.canvas.addEventListener('mousedown', JCanvas.canvasEvent, false);
+        JCanvas.canvas.addEventListener('mousemove', JCanvas.canvasEvent, false);
+        JCanvas.canvas.addEventListener('mouseup',   JCanvas.canvasEvent, false);
+    },
+
+    // The general-purpose event handler. This function just determines the mouse 
+    // position relative to the canvas element.
+    canvasEvent : function(ev) {
+
+        if (ev.layerX || ev.layerX == 0) { // Firefox
+            ev._x = ev.layerX;
+            ev._y = ev.layerY;
+        } 
+        else if (ev.offsetX || ev.offsetX == 0) { // Opera
+            ev._x = ev.offsetX;
+            ev._y = ev.offsetY;
         }
 
-        // This object holds the implementation of each drawing tool.
-        var tools = {
+        // Call the event handler of the tool.
+        var func = JCanvas.tool[ev.type];
+        if (func) {
+            func(ev);
+        }
+    },
 
-            
-        };
+    // The event handler for any changes made to the tool selector.
+    toolChangeEvent : function(ev) {
 
-        var tool_utils = {
-            mouseup : function(ev, tool) {
-                if (tool.started) {
-                    tool.mousemove(ev);
-                    tool.started = false;
-                    img_update();
-                }
-            }
-        };
+        if (JCanvas.tools[this.value]) {
+            JCanvas.tool = new JCanvas.tools[this.value]();
+        }
+    },
 
-        
+    // This function draws the #imageTemp canvas on top of #imageView, after which 
+    // #imageTemp is cleared. This function is called each time when the user 
+    // completes a drawing operation.
+    imageUpdate : function() {
 
-        tools.ellipse = function() {
-          
-            var tool = this;
-            this.started = false;
+        JCanvas.contextStatic.drawImage(JCanvas.canvas, 0, 0);
+        JCanvas.contextDynamic.clearRect(0, 0, JCanvas.canvas.width, JCanvas.canvas.height);
+    },
 
-            this.mousedown = function(ev) {
-                tool.started = true;
-                tool.x0 = ev._x;
-                tool.y0 = ev._y;
-            };
+    // This object holds the implementation of each drawing tool.
+    tools : {
+
+        ellipse : function() {
+
+            var tool = JCanvas.toolUtils.init(this);
 
             this.mousemove = function(ev) {
                 
-                if ( ! tool.started) {
-                    return;
-                }
+                if ( ! JCanvas.toolUtils.mousemove(ev, tool)) return;
 
-                var x = Math.min(ev._x,  tool.x0),
-                    y = Math.min(ev._y,  tool.y0),
-                    w = Math.abs(ev._x - tool.x0),
-                    h = Math.abs(ev._y - tool.y0);
-
-                context.clearRect(0, 0, canvas.width, canvas.height);
-
-                if (!w || !h) {
-                    return;
-                }
-
-                drawEllipse(context, x, y, w, h);
+                JDrawer.drawEllipse(
+                    JCanvas.contextDynamic,
+                    Math.min(ev._x,  tool.x0),
+                    Math.min(ev._y,  tool.y0),
+                    Math.abs(ev._x - tool.x0),
+                    Math.abs(ev._y - tool.y0));
             };
 
-            this.mouseup = function (ev) { tool_utils.mouseup(ev, tool) };
+            this.mousedown = function(ev) { JCanvas.toolUtils.mousedown(ev, tool) };
+            this.mouseup = function (ev) { JCanvas.toolUtils.mouseup(ev, tool) };
+        },
 
-            function drawEllipseByCenter(ctx, cx, cy, w, h) {
-                drawEllipse(ctx, cx - w/2.0, cy - h/2.0, w, h);
-            }
+        line : function() {
 
-            function drawEllipse(ctx, x, y, w, h) {
-                var kappa = .5522848,
-                    ox = (w / 2) * kappa, // control point offset horizontal
-                    oy = (h / 2) * kappa, // control point offset vertical
-                    xe = x + w,           // x-end
-                    ye = y + h,           // y-end
-                    xm = x + w / 2,       // x-middle
-                    ym = y + h / 2;       // y-middle
-
-                ctx.beginPath();
-                ctx.moveTo(x, ym);
-                ctx.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
-                ctx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
-                ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
-                ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
-                ctx.closePath();
-                ctx.stroke();
-            }
-        };
-
-        // The line tool.
-        tools.line = function () {
-            var tool = this;
-            this.started = false;
-
-            this.mousedown = function (ev) {
-                tool.started = true;
-                tool.x0 = ev._x;
-                tool.y0 = ev._y;
-            };
+            var tool = JCanvas.toolUtils.init(this);
 
             this.mousemove = function (ev) {
-                
-                if (!tool.started) {
-                    return;
-                }
 
-                context.clearRect(0, 0, canvas.width, canvas.height);
+                if ( ! JCanvas.toolUtils.mousemove(ev, tool)) return;
 
-                context.beginPath();
-                context.moveTo(tool.x0, tool.y0);
-                context.lineTo(ev._x,   ev._y);
-                context.stroke();
-                context.closePath();
+                JDrawer.drawLine(
+                    JCanvas.contextDynamic,
+                    tool.x0, 
+                    tool.y0, 
+                    ev._x, 
+                    ev._y);
             };
 
-            this.mouseup = function (ev) { tool_utils.mouseup(ev, tool) };
-        };
+            this.mousedown = function(ev) { JCanvas.toolUtils.mousedown(ev, tool) };
+            this.mouseup = function (ev) { JCanvas.toolUtils.mouseup(ev, tool) };
+        }
+    },
 
-        // tools.pencil = function () {
-            
-        //     var tool = this;
-        //     this.started = false;
+    // Common methods among all the tools
+    toolUtils : {
 
-        //     this.mousedown = function (ev) {
-        //         context.beginPath();
-        //         context.moveTo(ev._x, ev._y);
-        //         tool.started = true;
-        //     };
+        init : function(tool) {
+            tool.started = false;
+            return tool;
+        },
 
-        //     this.mousemove = function (ev) {
-        //         if (tool.started) {
-        //             context.lineTo(ev._x, ev._y);
-        //             context.stroke();
-        //         }
-        //     };
+        mousedown : function(ev, tool) {
+            tool.started = true;
+            tool.x0 = ev._x;
+            tool.y0 = ev._y;
+        },
 
-        //     this.mouseup = function (ev) { tool_utils.mouseup(ev, tool) };
-        // };
+        mousemove : function(ev, tool) {
+            if ( ! tool.started || (ev._x == tool.x0 && ev._y == tool.y0)) {
+                return false;
+            }
+            JCanvas.contextDynamic.clearRect(0, 0, JCanvas.canvas.width, JCanvas.canvas.height);
+            return true;
+        },
 
-        // The rectangle tool.
-        // tools.rect = function () {
-            
-        //     var tool = this;
-        //     this.started = false;
+        mouseup : function(ev, tool) {
+            if (tool.started) {
+                tool.mousemove(ev);
+                tool.started = false;
+                JCanvas.imageUpdate();
+            }
+        }
+    },
+};
 
-        //     this.mousedown = function (ev) {
-        //         tool.started = true;
-        //         tool.x0 = ev._x;
-        //         tool.y0 = ev._y;
-        //     };
+JDrawer = {
 
-        //     this.mousemove = function (ev) {
-        //         if (!tool.started) {
-        //             return;
-        //         }
+    drawEllipse : function(context, x, y, w, h) {
+        
+        var kappa = .5522848,
+            ox = (w / 2) * kappa, // control point offset horizontal
+            oy = (h / 2) * kappa, // control point offset vertical
+            xe = x + w,           // x-end
+            ye = y + h,           // y-end
+            xm = x + w / 2,       // x-middle
+            ym = y + h / 2;       // y-middle
 
-        //         var x = Math.min(ev._x,  tool.x0),
-        //             y = Math.min(ev._y,  tool.y0),
-        //             w = Math.abs(ev._x - tool.x0),
-        //             h = Math.abs(ev._y - tool.y0);
+        context.beginPath();
+        context.moveTo(x, ym);
+        context.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
+        context.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
+        context.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+        context.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
+        context.closePath();
+        context.stroke();
+    },
 
-        //         context.clearRect(0, 0, canvas.width, canvas.height);
+    drawLine : function(context, x0, y0, x1, y1) {
+        
+        context.beginPath();
+        context.moveTo(x0, y0);
+        context.lineTo(x1, y1);
+        context.stroke();
+        context.closePath();
+    }
+};
 
-        //         if (!w || !h) {
-        //             return;
-        //         }
 
-        //         context.strokeRect(x, y, w, h);
-        //     };
-
-        //     this.mouseup = function (ev) { tool_utils.mouseup(ev, tool) };
-        // };
-
-        init();
-
-    }, false); 
+if (window.addEventListener) {
+    window.addEventListener('load', JCanvas.init(), false); 
 }
 
