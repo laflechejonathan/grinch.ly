@@ -1,5 +1,9 @@
-import numpy
+#import numpy
 import matplotlib.pyplot as plt
+
+import serial
+import time
+
 import math
 import io
 class Point:
@@ -53,7 +57,7 @@ def circle(radius):
     points = []
 
     theta = step_size
-    while theta < 2*math.pi:
+    while theta <= 2*math.pi:
         new_x = radius * math.cos(theta)
         new_y = radius * math.sin(theta)
         points += bresenham(prev_x, prev_y, new_x, new_y)
@@ -70,45 +74,96 @@ def plot_points(p):
     plt.plot([p.x for p in points], [p.y for p in points])
     plt.show()
 
-def write_points_to_file(points, path):
-    f_handle = open(path, 'w')
-
-    f_handle.write("Array Length  " + str(len(points)) + "\n" )
-
-    f_handle.write('X axis: \n')
-    f_handle.write('{ ')
+def points_to_string(points):
+    point_str = ''
+    point_str += 'Array Length  ' + str(len(points)) + '\n'
+    point_str += 'X axis: \n { '
+    
     second = False
     for p in points:
         if second:
-            f_handle.write(', ')
+            point_str += ', '
         second = True
         if p.x == 1:
-            f_handle.write('1')
+            point_str += '1'
         elif p.x == -1:
-            f_handle.write('2')
+            point_str += '2'
         elif p.x == 0:
-            f_handle.write('0')
-    f_handle.write("}")
+            point_str += '0'
+    point_str += '}\n'
 
-    f_handle.write('Y axis: \n')
-    f_handle.write('{ ')
+    point_str += 'Y axis: \n'
+    point_str += '{ '
+    
     second = False
     for p in points:
         if second:
-            f_handle.write(', ')
+            point_str += ', '
         second = True
         if p.y == 1:
-            f_handle.write('1')
+            point_str += '1'
         elif p.y == -1:
-            f_handle.write('2')
+            point_str += '2'
         elif p.y == 0:
-            f_handle.write('0')
-    f_handle.write("}")
-
+            point_str += '0'
+    point_str += '}'
+    return point_str
+def write_points_to_file(points, path):
+    f_handle = open(path, 'w')
+    f_handle.write(points_to_string(points))
     f_handle.close()
 
+def write_points_to_serial(points):
+    print "Length: ", len(points)
+    ser = serial.Serial('COM4', 115200)
+    
+    while ser.read() != 'y':
+        pass
+    
+    num_to_str = { 0: '0', -1: '2', 1: '1' }
+    
+    str_points_x = map(lambda x: str(x) if x != -1 else str(2), [p.x for p in points])
+    str_points_y = map(lambda y: str(y) if y != -1 else str(2), [p.y for p in points])
+    
+    
+    for x,y in zip(str_points_x, str_points_y):
+        print x+y
+        ser.write(x+y)
+    print 'go'
+    ser.write('go');
+    time.sleep(5)
+    ser.close()
 
 write_points_to_file(circle(100), "100_circle.txt")
 write_points_to_file(bresenham(0,0,50,50), "some_line.txt")
-plot_points(circle(100))
+#plot_points(circle(100))
 #plot_points(bresenham(0,0, 10, 20))
+
+print 'Valid commands are:\n\tc <radius>\n\tl <x1> <y1> <x2> <y2>\n'
+while (True):
+    command = raw_input()
+    command = command.split(' ')
+    if command[0] == 'c':
+        try:
+            radius = int(command[1])
+            #plot_points(circle(radius))
+            write_points_to_serial(circle(radius))
+        except ValueError:
+            print ('i want a radius')
+    elif command[0] == 'l':
+        try:
+            print command
+            x1 = int(command[1])
+            y1 = int(command[2])
+            x2 = int(command[3])
+            y2 = int(command[4])
+            write_points_to_serial(bresenham(x1, y1, x2, y2))
+        except ValueError:
+            print 'I want 2 (x,y) pairs'
+    else:
+        print 'Valid commands are:\n\tc <radius>\n\tl <x1> <y1> <x2> <y2>\n'
+    
+
+    
+    
+    
