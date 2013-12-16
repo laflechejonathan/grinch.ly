@@ -3,25 +3,13 @@
     
     <head>
         <meta charset="utf-8">
+        
         <title>JCanvas</title>
+        
         <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
         <link href="http://fonts.googleapis.com/css?family=Dancing+Script" rel="stylesheet" type="text/css">
-        <style type="text/css"><!--
-            #title { text-align: center; font-family: 'Dancing Script', Georgia, Times, serif; 
-                        padding: 20px; font-size: 59px; line-height: 60px; }
 
-            #body { width: 1000px; margin: 0 auto; padding: 40px;}
-
-            #drawingtoolscontainer { position: relative; float: left; }
-            #drawingtools .ui-selecting { background: #FECA40; }
-            #drawingtools .ui-selected { background: #F39814; color: white; }
-            #drawingtools { list-style-type: none; margin: 0; padding: 0; width: 100%; }
-            #drawingtools li { margin: 3px; padding: 0.4em; font-size: 1.4em; height: 18px; }
-
-            #canvascontainer { position: relative; float: left; }
-            #imageView { border: 1px solid #000; }
-            #imageTemp { position: absolute; top: 1px; left: 1px; }
-        --></style>
+        <link rel="stylesheet" href="css/styles.css">
     </head>
     
     <body>
@@ -42,15 +30,7 @@
 
             <div id="canvascontainer">
                 <canvas id="imageView" width="800" height="600">
-                    <p>
-                        Unfortunately, your browser is currently unsupported by JCanvas.
-                    </p>
-                    <p>
-                        Supported browsers: <a href="http://www.opera.com">Opera</a>, 
-                            <a href="http://www.mozilla.com">Firefox</a>,
-                            <a href="http://www.apple.com/safari">Safari</a>, and
-                            <a href="http://www.konqueror.org">Konqueror</a>.
-                    </p>
+                    <p>Unfortunately, your browser is currently unsupported by JCanvas.</p>
                 </canvas>
             </div>
 
@@ -58,9 +38,9 @@
 
         <div style="clear:both; padding-bottom: 50px;"> 
 
-        <script type="text/javascript" src="lib/jquery-1.10.2.js"></script>
-        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-        <script type="text/javascript" src="lib/fabric.js"></script>
+        <script type="text/javascript" src="js/lib/jquery-1.10.2.js"></script>
+        <script type="text/javascript" src="js/lib/jquery-ui.js"></script>
+        <script type="text/javascript" src="js/lib/fabric.js"></script>
         
         <script type="text/javascript" src="js/JCanvas.js"></script>
 
