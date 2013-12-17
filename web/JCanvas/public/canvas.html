@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+    <head>
+
+        <meta charset="utf-8">
+        
+        <title>JCanvas</title>
+        
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dancing+Script">
+        <link rel="stylesheet" href="stylesheets/styles.css">
+
+    </head>
+    
+
+    <body>
+
+        <div id="title">
+            JCanvas
+        </div>
+
+        <div id="body">
+
+            <div id="drawingtoolscontainer">
+                <ol id="drawingtools">
+                    <li id="hand" class="ui-widget-content">Hand Tool</li>
+                    <li id="line" class="ui-widget-content">Add Line</li>
+                    <li id="ellipse" class="ui-widget-content">Add Ellipse</li>
+                </ol>
+            </div>
+
+            <div id="canvascontainer">
+                <canvas id="canvas" width="800" height="600">
+                    <p>Unfortunately, your browser is currently unsupported by JCanvas.</p>
+                </canvas>
+            </div>
+
+            <div id="submissioncontainer">
+                <ol id="submissionoptions">
+                    <li id="submitcanvas" class="ui-widget-content">Submit</li>
+                </ol>
+            </div>
+
+        </div>
+
+        <div style="clear:both; padding-bottom: 50px;"> 
+
+        <script type="text/javascript" src="javascripts/lib/jquery-1.10.2.js"></script>
+        <script type="text/javascript" src="javascripts/lib/jquery-ui.js"></script>
+        <script type="text/javascript" src="javascripts/lib/fabric.js"></script>
+        
+        <script type="text/javascript" src="javascripts/JCanvas.js"></script>
+
+        <script type="text/javascript" src="javascripts/App.js"></script>
+
+    </body>
+
+</html>
