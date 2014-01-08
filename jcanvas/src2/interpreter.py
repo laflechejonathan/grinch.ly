@@ -1,3 +1,4 @@
+import os
 import sys
 import rasterizer
 import softplotter
@@ -63,7 +64,10 @@ def RunScript(fname):
 
 if __name__ == '__main__':
     
-    grinch_resource = open('./grinch.txt', 'r')
+    script_path = os.path.realpath(__file__)
+    script_dir = os.path.dirname(script_path)
+    grinch_path = os.path.join(script_dir, 'grinch.txt')
+    grinch_resource = open(grinch_path, 'r')
     print grinch_resource.read()
     print 'Welcome to the grinch.ly drawing shell.'
 
