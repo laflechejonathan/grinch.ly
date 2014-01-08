@@ -82,7 +82,7 @@ def circle(radius):
         theta += step_size
     return points
 
-def line(x,y):
+def lineto(x,y):
     points = bresenham(0,0,x,y)
     drawing_instructions = points_to_string(points)
     return ['dnz'] + drawing_instructions + ['upz']

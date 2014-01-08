@@ -6,7 +6,7 @@ import softplotter
 def PrintHelpMessage():
     print 'The grinch.ly drawing shell supports the following commands:'
     print '\tellipse <w> <h>'
-    print '\tline <x> <y>'
+    print '\tlineto <x> <y>'
     print '\tmoveto <x> <y>'
     print '\tshow'
     print '\tquit'
@@ -39,11 +39,22 @@ def ParseCommand(command):
         instructions = rasterizer.moveto(dx, dy)
         # plot
         plotter.ExecuteInstructions(instructions)
-    elif command[0] == 'line':
-        x = int(command[1])
-        y = int(command[2])
-        instructions = rasterizer.line(x,y)
+    elif command[0] == 'lineto':
+        # get target position
+        dest_x = int(command[1])
+        dest_y = int(command[2])
+        # get current position
+        position = plotter.GetPosition()
+        curr_x = position[0]
+        curr_y = position[1]
+        # generate instructions
+        dx = dest_x - curr_x
+        dy = dest_y - curr_y
+        instructions = rasterizer.lineto(dx, dy)
+        # plot
         plotter.ExecuteInstructions(instructions)
+ 
+
     elif command[0] == 'show':
         plotter.ShowPreview()
     elif command[0] == 'quit':
