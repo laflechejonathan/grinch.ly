@@ -120,7 +120,7 @@ JCanvas = {
 
         // Submit the drawing
         if (JCanvas.canvas._objects.length > 0) {
-            JCanvas.sendDrawing(JSON.stringify(JCanvas.canvas));
+            JCanvas.sendDrawing(JCanvas.canvas);
             alert("Successfully submitted drawing!");
         }
 
@@ -128,8 +128,14 @@ JCanvas = {
         JCanvas.canvas.clear();
     },
 
-    sendDrawing : function(json) {
-        //console.log(json);
+    sendDrawing : function(canvas) {
+        
+        $.ajax({
+          type: "POST",
+          url: "/test",
+          data: canvas.toJSON()
+        });
+
     },
 
     tools : {
