@@ -6,6 +6,12 @@ import io
 class Point:
     x = 0
     y = 0
+
+    def __init__(self, x=0, y=0):
+        assert x < 2 and x > -2
+        assert y < 2 and y > -2
+        self.x = x
+        self.y = y
     def __str__(self):
         return "x: " + str(self.x) + ", y: " + str(self.y) + "\n"
 
@@ -17,6 +23,7 @@ class Point:
         elif p == -1:
             return '2'
         else:
+            print "value is ", p
             assert False
 
     def command_str(self):
@@ -65,22 +72,95 @@ def bresenham(x0, y0, x1, y1):
 
     return points
 
+
+def accumulate_points(quadrants, x_moves, y_moves):
+    quadrants[0].append(Point(1 if x_moves else 0, -1 if y_moves else 0))
+    quadrants[1].insert(0, Point(-1 if x_moves else 0, -1 if y_moves else 0))
+    quadrants[2].append(Point(-1 if x_moves else 0, 1 if y_moves else 0))
+    quadrants[3].insert(0, Point(1 if x_moves else 0, 1 if y_moves else 0))
+
+def bresenham_ellipse(x_radius, y_radius):
+    if x_radius == 0 or y_radius == 0:
+        return
+
+    quadrants = [[], [], [], []]
+    x_radius = abs(x_radius)
+    y_radius = abs(y_radius)
+
+    a2_square = 2 * x_radius * x_radius
+    b2_square = 2 * y_radius * y_radius
+    error = x_radius * x_radius * y_radius
+
+    x = 0
+    y = y_radius
+
+    stop_y = 0
+    stop_x = a2_square * y_radius
+
+
+    # draw points while x is growing faster than y
+    while stop_y <= stop_x:
+        x += 1
+        error -= b2_square * (x - 1)
+        stop_y += b2_square
+        
+        y_moves = False
+        if error <= 0:
+            error += a2_square * (y - 1)
+            y -= 1
+            stop_x -= a2_square
+            y_moves = True
+        quadrants[0].append(Point(1, -1 if y_moves else 0))
+        quadrants[1].insert(0, Point(-1, -1 if y_moves else 0))
+        quadrants[2].append(Point(-1, 1 if y_moves else 0))
+        quadrants[3].insert(0, Point(1, 1 if y_moves else 0))
+
+    set1_len = len(quadrants[0])
+    set2_len = 0
+    error = y_radius * y_radius * x_radius
+    x = x_radius
+    y = 0
+
+    stop_y = b2_square * x_radius
+    stop_x = 0
+    while stop_y >= stop_x:
+        y += 1
+        error -= a2_square * (y - 1)
+        stop_x += a2_square;
+        x_moves = False
+
+        if error < 0:
+            error += b2_square * (x - 1)
+            x -= 1 
+            stop_y -= b2_square
+            x_moves = True
+
+        quadrants[0].insert(set1_len, Point(1 if x_moves else 0, -1))
+        quadrants[1].insert(set2_len, Point(-1 if x_moves else 0, -1))
+        quadrants[2].insert(set1_len, Point(-1 if x_moves else 0, 1))
+        quadrants[3].insert(set2_len, Point(1 if x_moves else 0, 1))
+        set2_len += 1
+    return [i for quadrant in quadrants for i in quadrant]
+#    return [i for i in quadrants[0]]
+
+def ellipse(x_radius, y_radius):
+
+    # move to top of circle
+    pre_move_instructions =  moveto(0, y_radius)
+
+    # draw ellipse
+    points = bresenham_ellipse(x_radius, y_radius)
+    drawing_instructions = points_to_string(points)
+    ellipse_instructions = ['dnz'] + drawing_instructions + ['upz']
+
+    # move back to center
+    post_move_instructions = moveto(0, -y_radius)
+
+    # glue it all together
+    return pre_move_instructions + ellipse_instructions + post_move_instructions
+
 def circle(radius):
-    step_size = 0.01
-
-    prev_x = radius * math.cos(0)
-    prev_y = radius * math.sin(0)
-    points = []
-
-    theta = step_size
-    while theta < 2*math.pi:
-        new_x = radius * math.cos(theta)
-        new_y = radius * math.sin(theta)
-        points += bresenham(prev_x, prev_y, new_x, new_y)
-        prev_x = new_x
-        prev_y = new_y
-        theta += step_size
-    return points
+    return ellipse(radius, radius)
 
 def lineto(x,y):
     points = bresenham(0,0,x,y)

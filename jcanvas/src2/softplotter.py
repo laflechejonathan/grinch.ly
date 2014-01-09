@@ -51,4 +51,5 @@ class SoftwarePlotter:
     def ShowPreview(self):
         for item in zip(self._xpts, self._ypts):
             plt.plot(item[0], item[1], color='black')
+        plt.axis('equal')
         plt.show()
