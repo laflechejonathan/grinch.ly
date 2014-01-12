@@ -5,7 +5,7 @@
 
 var PORT = 8080;
 var COMMANDS_FILE_NAME = "../../files/commands.txt";
-var INTERPRETER_FILE_NAME = "../../jcanvas/src2/interpreter.py";
+var INTERPRETER_FILE_NAME = "../../jcanvas/src/interpreter.py";
 var CANVAS_HEIGHT = 600;
 var CANVAS_WIDTH = 800;
 
@@ -47,10 +47,7 @@ app.post('/api/images', function(req, res) {
 
 app.post('/test', function(req, res) {
 
-    console.log("START");
-    console.log(req.body);
     console.log(req.body.objects);
-    console.log("DONE");
 
     commands = [];
 
