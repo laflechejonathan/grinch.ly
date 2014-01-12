@@ -6,6 +6,8 @@
 var PORT = 8080;
 var COMMANDS_FILE_NAME = "../../files/commands.txt";
 var INTERPRETER_FILE_NAME = "../../jcanvas/src2/interpreter.py";
+var CANVAS_HEIGHT = 600;
+var CANVAS_WIDTH = 800;
 
 var fabric = require('fabric').fabric;
 var express = require('express');
@@ -59,21 +61,21 @@ app.post('/test', function(req, res) {
 
         if (type == "line") {
             var x1 = canvasObject.x1,
-                y1 = canvasObject.y1,
+                y1 = CANVAS_HEIGHT - canvasObject.y1,
                 x2 = canvasObject.x2,
-                y2 = canvasObject.y2;
+                y2 = CANVAS_HEIGHT - canvasObject.y2;
             commands.push("moveto " + x1 + " " + y1);
             commands.push("lineto " + x2 + " " + y2);
         }
         else if (type == "ellipse") {
             var left = + canvasObject.left,
-                top = + canvasObject.top,
-                width = + canvasObject.width * canvasObject.scaleX,
-                height = + canvasObject.height * canvasObject.scaleY;
-            var middleX = Math.floor((left + width) / 2),
-                middleY = Math.floor((top + height) / 2);
+                top = + CANVAS_HEIGHT - canvasObject.top,
+                radiusX = Math.floor(+ canvasObject.width * canvasObject.scaleX / 2),
+                radiusY = Math.floor(+ canvasObject.height * canvasObject.scaleY / 2);
+            var middleX = Math.floor(left + radiusX),
+                middleY = Math.floor(top + radiusY);
             commands.push("moveto " + middleX + " " + middleY);
-            commands.push("ellipse " + width + " " + height);
+            commands.push("ellipse " + radiusX + " " + radiusY);
         }
         else {
             console.log("Shape unsupported!");

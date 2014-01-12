@@ -1,2 +1,8 @@
-moveto 215 129
-line 315 229
+moveto 152 526
+ellipse 50 50
+moveto 253 530
+ellipse 50 50
+moveto 199 578
+ellipse 86 50
+moveto 204 471
+ellipse 148 50

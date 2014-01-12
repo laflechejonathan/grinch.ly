@@ -125,7 +125,7 @@ JCanvas = {
         }
 
         // Clear Canvas
-        JCanvas.canvas.clear();
+        //JCanvas.canvas.clear();
     },
 
     sendDrawing : function(canvas) {
