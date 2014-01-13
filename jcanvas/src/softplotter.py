@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-
+import serial_module
 #   Define Instruction Set as:
 #
 #   [0/1/2] [0/1/2] m       ## Move X/Y axis
@@ -36,7 +36,7 @@ class SoftwarePlotter:
                     self._ypts.append([old_y, self._ypos])
             elif instruct[2] == 'z':
                 if instruct[:2] == 'up':
-                    self._pen_down = False
+                    self._pen_down = True#!!#False
                 elif instruct[:2] == 'dn':
                     self._pen_down = True
                 else:
@@ -44,6 +44,8 @@ class SoftwarePlotter:
                     assert False
             else:
                 assert False
+        #print instructions
+        serial_module.SendInstructions(instructions)
 
     def GetPosition(self):
         return (self._xpos, self._ypos)
@@ -53,3 +55,9 @@ class SoftwarePlotter:
             plt.plot(item[0], item[1], color='black')
         plt.axis('equal')
         plt.show()
+        
+    def Clear(self):
+        self._xpts = []
+        self._ypts = []
+    def Init(self, port):
+        serial_module.Initialize(port)

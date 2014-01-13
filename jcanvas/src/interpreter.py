@@ -9,32 +9,36 @@ def PrintHelpMessage():
     print 'circle <radius>'
     print 'lineto <x> <y>'
     print 'moveto <x> <y>'
+    print 'scale <s>'
+    print 'init <port'
     print 'pos'
     print 'show'
+    print 'clear'
     print 'quit'
     print 'help'
 
 plotter = softplotter.SoftwarePlotter()
-
+scale = 1
 def ParseCommand(command):
+    global scale
     try:
         command = command.strip().split()
-        if len(command) < 1:
+        if len(command) < 1 or command[0][0] == '#':
             return True
 
         if command[0] == 'ellipse':
-            x_rad = int(command[1])
-            y_rad = int(command[2])
+            x_rad = int(command[1]) * scale
+            y_rad = int(command[2]) * scale
             instructions = rasterizer.ellipse(x_rad, y_rad)
             plotter.ExecuteInstructions(instructions)
         elif command[0] == 'circle':
-            radius = int(command[1])
+            radius = int(command[1]) * scale
             instructions = rasterizer.circle(radius)
             plotter.ExecuteInstructions(instructions)
         elif command[0] == 'moveto':
             # get target position
-            dest_x = int(command[1])
-            dest_y = int(command[2])
+            dest_x = int(command[1]) * scale
+            dest_y = int(command[2]) * scale
             # get current position
             position = plotter.GetPosition()
             curr_x = position[0]
@@ -48,8 +52,8 @@ def ParseCommand(command):
 
         elif command[0] == 'lineto':
             # get target position
-            dest_x = int(command[1])
-            dest_y = int(command[2])
+            dest_x = int(command[1]) * scale
+            dest_y = int(command[2]) * scale
             # get current position
             position = plotter.GetPosition()
             curr_x = position[0]
@@ -61,11 +65,17 @@ def ParseCommand(command):
             # plot
             plotter.ExecuteInstructions(instructions)
 
+        elif command[0] == 'init':
+            plotter.Init(command[1])
         elif command[0] == 'pos':
             position = plotter.GetPosition()
             print 'Current Plotter Position:\n\nx:%d\ny:%d' % (position[0], position[1])
         elif command[0] == 'show':
             plotter.ShowPreview()
+        elif command[0] == 'clear':
+            plotter.Clear()
+        elif command[0] == 'scale':
+            scale = int(command[1])
         elif command[0] == 'quit':
             print 'Goodbye!'
             return False
